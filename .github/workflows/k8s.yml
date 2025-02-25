@@ -37,4 +37,8 @@ jobs:
 
     - name: Deploy JupyterHub
       run: |
-        helm upgrade --install jhub jupyterhub/jupyterhub --namespace jupyterhub --version=4.1.0 --values jupyter-config.yaml
+        helm upgrade --install jupyterhub jupyterhub/jupyterhub \
+          --namespace jupyterhub \
+          --create-namespace \
+          --version=4.1.0 \
+          --values jupyter-config.yaml
