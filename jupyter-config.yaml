@@ -3,6 +3,7 @@ hub:
     JupyterHub:
       authenticator_class: dummy
 singleuser:
+  # https://z2jh.jupyter.org/en/stable/jupyterhub/customizing/extending-jupyterhub.html
   image:
     name: jupyter/base-notebook
     tag: latest

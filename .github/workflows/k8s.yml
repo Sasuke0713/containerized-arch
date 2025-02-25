@@ -31,6 +31,7 @@ jobs:
 
     - name: Add JupyterHub Helm repo
       run: |
+        # https://github.com/jupyterhub/helm-chart?tab=readme-ov-file https://z2jh.jupyter.org/en/stable/
         helm repo add jupyterhub https://jupyterhub.github.io/helm-chart/
         helm repo update
 
