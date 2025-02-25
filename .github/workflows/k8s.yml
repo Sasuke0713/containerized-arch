@@ -1,0 +1,39 @@
+name: Deploy JupyterHub on Kubernetes
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up kind cluster
+      uses: engineerd/setup-kind@v0.6.2
+      with:
+        version: v0.27.0
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v4
+      id: install
+
+    - name: Install Helm
+      run: |
+        curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+    - name: Add JupyterHub Helm repo
+      run: |
+        helm repo add jupyterhub https://jupyterhub.github.io/helm-chart/
+        helm repo update
+
+    - name: Deploy JupyterHub
+      run: |
+        helm upgrade --install jhub jupyterhub/jupyterhub --namespace jupyterhub --version=4.1.0 --values jupyter-config.yaml

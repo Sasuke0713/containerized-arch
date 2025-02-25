@@ -1,0 +1,28 @@
+hub:
+  config:
+    JupyterHub:
+      authenticator_class: dummy
+singleuser:
+  image:
+    name: jupyter/base-notebook
+    tag: latest
+  profileList:
+    - display_name: "Minimal Python environment"
+      description: "To avoid too much bells and whistles: Python."
+      default: true
+    - display_name: "Spark environment"
+      description: "The Jupyter Stacks spark image!"
+      kubespawner_override:
+        image: jupyter/all-spark-notebook:latest
+    - display_name: "Python Data Science"
+      description: "If you want the additional bells and whistles: Python, R, and Julia."
+      kubespawner_override:
+        image: jupyter/datascience-notebook:latest
+        cpu_limit: 2
+        mem_limit: 4G
+    - display_name: "R Data Science"
+      description: "R with data science libraries"
+      kubespawner_override:
+        image: jupyter/r-notebook:latest
+        cpu_limit: 2
+        mem_limit: 4G
