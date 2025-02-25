@@ -54,27 +54,6 @@ jobs:
     - name: Scan Docker image with Trivy
       if: github.event_name == 'push'
       run: trivy image goku0713/ubuntu2204python:${{ github.sha }}
-    
-    - name: Create status check
-      uses: actions/github-script@v4
-      with:
-        script: |
-          const { conclusion } = await github.rest.checks.create({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            name: 'Job Status',
-            head_sha: context.sha,
-            status: 'completed',
-            conclusion: 'success',
-            output: {
-              title: 'Job Status',
-              summary: 'The Github Action has completed successfully.',
-              text: 'The Github Action has completed successfully with no errors.'
-            }
-          });
-          if (conclusion !== 'success') {
-            throw new Error('Github action failed');
-          }
 
     #- name: Deploy to Kubernetes
     #  run: |
