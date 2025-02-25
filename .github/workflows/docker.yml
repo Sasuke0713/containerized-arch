@@ -66,10 +66,37 @@ jobs:
       uses: azure/setup-kubectl@v4
       id: install
 
+    - name: Create deployment.yaml
+      if: github.event_name == 'push'
+      run: |
+        cat <<EOF > deployment.yaml
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: pythonapp
+          labels:
+            app: pythonapp
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              app: pythonapp
+          template:
+            metadata:
+              labels:
+                app: pythonapp
+            spec:
+              containers:
+              - name: myapp
+                image: goku0713/ubuntu2204python:${{ github.sha }}
+                ports:
+                - containerPort: 8080
+        EOF
+
     - name: Deploy Built Image to k8s
       if: github.event_name == 'push'
       run: |
-        kubectl set image deployment/pythonapp myapp=goku0713/ubuntu2204python:${{ github.sha }}
+        kubectl apply -f deployment.yaml
         
         # expose the deployed resource to the internet
         kubectl expose deployment pythonapp --type=LoadBalancer --port=80 --target-port=8080
