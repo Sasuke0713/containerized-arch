@@ -1,5 +1,11 @@
 FROM ubuntu:22.04
 
+# LABEL about the custom image
+LABEL maintainer="Service_Team"
+
+# Set environment variable to suppress debconf warnings
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     python2 \
