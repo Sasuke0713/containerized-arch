@@ -15,8 +15,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     && curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py \
     && python2 get-pip.py \
-    && rm get-pip.py \
-    && apt-get install -y python3-pip
+    && rm get-pip.py
 
 # Install Python packages
 COPY requirements.txt /tmp/requirements.txt
