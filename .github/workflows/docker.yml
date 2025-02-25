@@ -54,10 +54,3 @@ jobs:
     - name: Scan Docker image with Trivy
       if: github.event_name == 'push'
       run: trivy image goku0713/ubuntu2204python:${{ github.sha }}
-
-    #- name: Deploy to Kubernetes
-    #  run: |
-    #    kubectl apply -f deployment.yaml
-    #    kubectl apply -f service.yaml
-    #  env:
-    #    KUBECONFIG: ${{ secrets.KUBECONFIG }}
