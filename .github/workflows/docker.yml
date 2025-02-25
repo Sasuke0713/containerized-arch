@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -22,7 +25,16 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
+    - name: Build Docker image only on pull request
+      if: github.event_name == 'pull_request'
+      uses: docker/build-push-action@v2
+      with:
+        push: false
+        tags: goku0713/ubuntu2204python:${{ github.sha }}
+        file: ./Dockerfile
+
     - name: Build and push Docker image
+      if: github.event_name == 'push'
       uses: docker/build-push-action@v2
       with:
         push: true
@@ -30,6 +42,7 @@ jobs:
         file: ./Dockerfile
 
     - name: Install Trivy
+      if: github.event_name == 'push'
       run: |
         sudo apt-get update
         sudo apt-get install -y wget apt-transport-https gnupg lsb-release
@@ -39,6 +52,7 @@ jobs:
         sudo apt-get install -y trivy
   
     - name: Scan Docker image with Trivy
+      if: github.event_name == 'push'
       run: trivy image goku0713/ubuntu2204python:${{ github.sha }}
 
     #- name: Deploy to Kubernetes
