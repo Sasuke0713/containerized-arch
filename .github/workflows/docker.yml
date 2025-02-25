@@ -54,3 +54,22 @@ jobs:
     - name: Scan Docker image with Trivy
       if: github.event_name == 'push'
       run: trivy image goku0713/ubuntu2204python:${{ github.sha }}
+
+    - name: Set up kind cluster
+      if: github.event_name == 'push'
+      uses: engineerd/setup-kind@v0.6.2
+      with:
+        version: v0.27.0
+
+    - name: Set up kubectl
+      if: github.event_name == 'push'
+      uses: azure/setup-kubectl@v4
+      id: install
+
+    - name: Deploy Built Image to k8s
+      if: github.event_name == 'push'
+      run: |
+        kubectl set image deployment/pythonapp myapp=goku0713/ubuntu2204python:${{ github.sha }}
+        
+        # expose the deployed resource to the internet
+        kubectl expose deployment pythonapp --type=LoadBalancer --port=80 --target-port=8080
