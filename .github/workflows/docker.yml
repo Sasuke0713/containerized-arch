@@ -42,6 +42,7 @@ jobs:
         file: ./Dockerfile
 
     - name: Install Trivy
+      if: github.event_name == 'push'
       run: |
         sudo apt-get update
         sudo apt-get install -y wget apt-transport-https gnupg lsb-release
@@ -51,6 +52,7 @@ jobs:
         sudo apt-get install -y trivy
   
     - name: Scan Docker image with Trivy
+      if: github.event_name == 'push'
       run: trivy image goku0713/ubuntu2204python:${{ github.sha }}
 
     #- name: Deploy to Kubernetes
