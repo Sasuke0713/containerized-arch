@@ -56,11 +56,13 @@ jobs:
       run: trivy image goku0713/ubuntu2204python:${{ github.sha }}
 
     - name: Set up kind cluster
+      if: github.event_name == 'push'
       uses: engineerd/setup-kind@v0.6.2
       with:
         version: v0.27.0
 
     - name: Set up kubectl
+      if: github.event_name == 'push'
       uses: azure/setup-kubectl@v4
       id: install
 

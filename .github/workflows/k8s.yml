@@ -58,9 +58,10 @@ jobs:
         helm repo update
 
         helm upgrade --install prometheus prometheus-community/prometheus --namespace kube-system --create-namespace
+        helm upgrade --install prometheus-operator-crds prometheus-community/prometheus-operator-crds --namespace kube-system
         helm upgrade --install grafana grafana/grafana --namespace kube-system --create-namespace --set persistence.enabled=true
 
         # Wait for prometheus and grafana to be ready
         kubectl wait --for=condition=ready pod --all --timeout=600s -n kube-system
 
-        kubectl apply -f prometheus-alerts.yaml --namespace monitoring
+        kubectl apply -f prometheus-alerts.yaml --namespace kube-system
