@@ -14,8 +14,6 @@ The deployment workflow is defined in the [`.github/workflows/k8s.yml`](.github/
 
 ## Monitoring
 
-## Monitoring
-
 This repository includes a monitoring setup using Prometheus and Grafana to ensure that resource requests are accurate (requested vs used) with the CPU and memory limits.
 
 ### Prometheus and Grafana Installation
