@@ -11,3 +11,50 @@ The CI/CD workflow is defined in the [`.github/workflows/docker.yml`](.github/wo
 This repository also includes a GitHub Actions workflow to set up a `kind` cluster and deploy JupyterHub. The workflow installs Helm, adds the JupyterHub Helm repository, creates the `jupyterhub` namespace, and deploys JupyterHub using Helm.
 
 The deployment workflow is defined in the [`.github/workflows/k8s.yml`](.github/workflows/k8s.yml) file.
+
+## Monitoring
+
+## Monitoring
+
+This repository includes a monitoring setup using Prometheus and Grafana to ensure that resource requests are accurate (requested vs used) with the CPU and memory limits.
+
+### Prometheus and Grafana Installation
+
+Prometheus and Grafana are installed using Helm charts. The `k8s.yml` workflow includes steps to add the Helm repositories, install Prometheus and Grafana, and configure them to scrape metrics from the Kubernetes cluster.
+
+### Prometheus Rules
+
+Prometheus rules are defined to alert on high CPU and memory usage. These rules are applied to the cluster to monitor resource usage and ensure that the requested resources are being used efficiently.
+
+### Grafana Dashboards
+
+Grafana dashboards are used to visualize the metrics collected by Prometheus. Pre-built Kubernetes dashboards are imported to provide insights into the cluster's resource usage.
+
+### Example Prometheus Alert Rule
+
+```yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: prometheus-alerts
+  namespace: monitoring
+spec:
+  groups:
+  - name: resource-usage
+    rules:
+    - alert: HighCPUUsage
+      expr: (sum(rate(container_cpu_usage_seconds_total[5m])) by (pod) / sum(kube_pod_container_resource_requests{resource="cpu"}) by (pod)) > 0.8
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High CPU usage detected"
+        description: "Pod {{ $labels.pod }} is using more than 80% of its requested CPU for more than 5 minutes."
+    - alert: HighMemoryUsage
+      expr: (sum(container_memory_usage_bytes) by (pod) / sum(kube_pod_container_resource_requests{resource="memory"}) by (pod)) > 0.8
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High Memory usage detected"
+        description: "Pod {{ $labels.pod }} is using more than 80% of its requested memory for more than 5 minutes."
